@@ -1,0 +1,30 @@
+{
+  "name": "postbud",
+  "version": "0.0.0",
+  "description": "SMTP to HTTP gateway",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andreasabilio/postbud.git"
+  },
+  "keywords": [
+    "smtp",
+    "http",
+    "gateway"
+  ],
+  "author": "Andreas Abilio <andreas@abilio.dk>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andreasabilio/postbud/issues"
+  },
+  "homepage": "https://github.com/andreasabilio/postbud#readme",
+  "dependencies": {
+    "axios": "^0.26.0",
+    "mailparser": "^3.4.0",
+    "smtp-protocol": "^2.4.7",
+    "winston": "^3.6.0"
+  }
+}
