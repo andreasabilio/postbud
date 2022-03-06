@@ -1,60 +1,28 @@
-const { log, server, post, parse }
+const config = require('./config.json');
+const utilities = require('./utilities');
 
-const smtp = require("smtp-protocol");
-const { post } = require('axios');
-const { createLogger, format, transports } = require('winston');
-const simpleParser = require('mailparser').simpleParser;
-
-// Logger
-const logger = createLogger({
-    level: 'info',
-    format: format.simple(),
-    transports: [ new transports.Console() ],
-});
+const { log, server, notify } = utilities;
+const { parseEmail, parseNotification } = utilities;
+const { logMessage, logNotification } = utilities;
 
 // Hello
-logger.info('Starting Postbud...');
+log.info('Starting Postbud...');
 
-const relayMessage = (message) => {
-    logger.info('Message recieved');
+const serverSetup = (req) => {
+    // Handle all messages
+    req.on('message', (stream, ack) => {
+        // Handle message
+        parseEmail(stream)
+            .then(logMessage(req, log))
+            .then(parseNotification(config))
+            .then(notify(config))
+            .then(logNotification(req, log))
+            .catch(log.error);
 
-    const { text, from } = message;
-
-    // XXX
-    console.log('>>>', message.from);
-    console.log(' ');
-
-    post('http://push.abilio.dk/message?token=AcQUrkKOv2PJxWF', {
-        "message": text, 
-        "title": "System " + from.value.pop().name, 
-        "priority":5, 
-        "extras": {
-          "client::display": {
-            "contentType": "text/markdown"
-          }
-        }
-      });
+        // Reply
+        ack.accept();
+    });
 };
 
-const onIncomingMessage = (req) => (stream, ack) => {
-    logger.info('Incomming message:');
-    logger.info('> Message from:', req.from);
-    logger.info('> Message to:', req.to);
-    
-    stream.pipe(process.stdout, { end : false });
-    // ack.accept();
-
-    // Relay the message
-    simpleParser(stream)
-        .then(relayMessage)
-        .catch(logger.error);
-
-    // Finish
-    ack.accept();
-};
-
-const server = smtp.createServer(function (req) {
-    req.on('message', onIncomingMessage(req));
-});
-
-server.listen(2526);
+// Run the SMTP server
+server(serverSetup).listen(2526);
