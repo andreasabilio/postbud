@@ -1,62 +1,86 @@
-const { post } = require('axios');
+const axios = require('axios');
 const smtp = require("smtp-protocol");
 const simpleParser = require('mailparser').simpleParser;
 const { createLogger, format, transports } = require('winston');
 
-// XXX
-// const url = 'http://push.abilio.dk/message?token=AcQUrkKOv2PJxWF';
+// Winston init
+const log = createLogger({
+    level: 'info',
+    format: format.simple(),
+    transports: [ new transports.Console() ],
+});
 
-const getTitle = (message) => message.headerLines
-    .filter(h => 'from' === h.key)
-    .pop().line.split('@').pop();
-
-const gettarget = (config, notification) => config.find(c => c.origin === notification.title);
+// Fallback handler for worng configs
+const fallbackHandler = (conf) => ({
+    run: (data) => ({
+        method: conf.method,
+        url: conf.endpoint
+    })
+});
 
 module.exports = {
     // Basic logger
-    log: createLogger({
-        level: 'info',
-        format: format.simple(),
-        transports: [ new transports.Console() ],
-    }),
+    log: log,
 
     // SMTP Server
     server: smtp.createServer,
+    
+    // Parse email message and add metadata
+    getEmail: (stream) => simpleParser(stream).then(message => {
+        const body = message?.text || '[missing "body"]';
+        const from = message.headerLines.filter(h => 'from' === h.key);
+        const [ user, host ] = from.split('@');
 
-    // Parse email message into workable object
-    parseEmail: simpleParser,
+        // The notification object
+        const notification = { 
+            body,
+            from: { user, host } 
+        };
 
-    parseNotification: (config) => (message) => {
-        const { text } = message;
-        const title = getTitle(message);
+        // The data object
+        return { message, notification };
+    }),
 
-        return {
-            "message": text, 
-            "title": title || 'System unknown!', 
-            "priority":5, 
-            "extras": {
-              "client::display": {
-                "contentType": "text/markdown"
-              }
+    // Load and run configured handlers
+    // to compose axios config objects (`requests`).
+    compose: (config) => {
+        // Run a handler with the given data
+        const runner = (data) => (handler) => handler(data);
+
+        // Ensure a handler is loaded and configured
+        const loader = (conf) => {
+            try {
+                const handler = require(`../handlers/${conf.name}`);
+                return handler(conf);
+            } catch(e) {
+                log.warning('Handler not found', name);
+                return fallbackHandler(config.fallback);
             }
-          };
+        };
+
+        // Request configs builder
+        return (data) => {
+            const requests = config.handlers
+                .map(loader)
+                .map(runner(data))
+                .filter(req => !!req);
+
+            return { ...data, requests };
+        }
     },
 
-    // Send the actual notifications
-    notify: (config) => (notification) => {
-        const { endpoint, token} = gettarget(config, notification);
-        const url = [endpoint, `token=${token}`].join('?');
+    // Send the HTTP notifications
+    notify: ({ requests }) => Promise.all(requests.map(axios.post)),
 
-        post(url, notification);
-    },
-
-    logMessage: (req, log) => (message) => {
+    // Log incomming SMTP message
+    logIncomming: (data) => {
         log.info('Incomming message');
-
-        return message;
+        return data;
     },
 
-    logNotification: (req, log) => () => {
+    // Log notifications
+    logOutgoing: (responses) => {
         log.info('Notification sent');
+        return responses;
     }
 };
