@@ -7,7 +7,7 @@ const parse = require('../parser');
  * the ogirinator of the email in the Gotify notification
  */
 
-module.exports = (conf) => {
+module.exports = (conf, log) => {
     // Expand the config
     const { endpoint, method, template, origins, fallbackToken } = conf;
 
@@ -33,6 +33,9 @@ module.exports = (conf) => {
     return ({ notification }) => {
         const url = getUrl(notification);
         const data = build(notification);
+
+        // Log handler
+        log.info(`Gotify - Sending notification to "${endpoint}"`);
 
         // Return an Axios arguments as array
         // return [url, {method, data}];
