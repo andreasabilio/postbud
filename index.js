@@ -1,28 +1,31 @@
-const config = require('./config.json');
+const config = require('./config');
 const utilities = require('./utilities');
 
-const { log, server, notify } = utilities;
-const { parseEmail, parseNotification } = utilities;
-const { logMessage, logNotification } = utilities;
+// Extract utilities
+const { log, logIncomming, logOutgoing } = utilities;
+const { server, getEmailMessage, compose, notify } = utilities;
+
+// Handle incoming email
+const onMessage = (stream, ack) => {
+    // Accept all messages
+    // and intiate the stream
+    ack.accept();
+
+    // Process message stream
+    // and send notification(s)
+    getEmailMessage(stream)
+        .then(logIncomming)
+        .then(compose(config))
+        .then(notify)
+        .then(logOutgoing)
+        .catch(log.error);
+};
+
+// Server setup that accepts all emails
+const acceptAll = (req) => req.on('message', onMessage);
 
 // Hello
 log.info('Starting Postbud...');
 
-const serverSetup = (req) => {
-    // Handle all messages
-    req.on('message', (stream, ack) => {
-        // Handle message
-        parseEmail(stream)
-            .then(logMessage(req, log))
-            .then(parseNotification(config))
-            .then(notify(config))
-            .then(logNotification(req, log))
-            .catch(log.error);
-
-        // Reply
-        ack.accept();
-    });
-};
-
 // Run the SMTP server
-server(serverSetup).listen(2526);
+server(acceptAll).listen(config.port);
