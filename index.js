@@ -18,7 +18,7 @@ const onMessage = (stream, ack) => {
         .then(compose(config))
         .then(notify)
         .then(logOutgoing)
-        .catch(log.error);
+        // .catch(log.error);
 };
 
 // Server setup that accepts all emails
