@@ -23,42 +23,42 @@
             "origins": [
                 {
                     "name": "sancho",
-                    "origin": "sancho.h.abilio.dk",
+                    "host": "sancho.h.abilio.dk",
                     "token": "ADRoC8IXdD3kZO1"
                 },
                 {
                     "name": "diogenes",
-                    "origin": "diogenes.abilio.dk",
+                    "host": "diogenes.abilio.dk",
                     "token": "AcC1E7gEi00wQjR"
                 },
                 {
                     "name": "harald",
-                    "origin": "harald.h.abilio.dk",
+                    "host": "harald.h.abilio.dk",
                     "token": "AGrtDDKV8n9GH5G"
                 },
                 {
                     "name": "hopper",
-                    "origin": "hopper.h.abilio.dk",
+                    "host": "hopper.h.abilio.dk",
                     "token": "ARzmny.zxj9rqmX"
                 },
                 {
                     "name": "zetas",
-                    "origin": "zzz.h.abilio.dk",
+                    "host": "zzz.h.abilio.dk",
                     "token": "AXaK2aA.MC1K6xk"
                 },
                 {
                     "name": "magallanes",
-                    "origin": "magallanes.h.abilio.dk",
+                    "host": "magallanes.h.abilio.dk",
                     "token": "AzgnB8XVWCPnaMH"
                 },
                 {
                     "name": "pihole",
-                    "origin": "pihole.abilio.dk",
+                    "host": "pihole.abilio.dk",
                     "token": "Ajh9iipmoEhFxjt"
                 },
                 {
                     "name": "wozniak",
-                    "origin": "wozniak.h.abilio.dk",
+                    "host": "wozniak.h.abilio.dk",
                     "token": "ABIcbBY8LsW_obj"
                 }
             ]

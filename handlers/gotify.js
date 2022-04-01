@@ -12,7 +12,7 @@ module.exports = (conf) => {
     const { endpoint, method, template, origins, fallbackToken } = conf;
 
     // Get final config based on email origin
-    const getOriginConfig = (from) => origins.find(host => from.host.includes(host));
+    const getOriginConfig = (from) => from?.host && origins.find(origin => from.host === origin.host);
 
     // Build the notification request data from template
     const build = (notification) => {
@@ -34,7 +34,8 @@ module.exports = (conf) => {
         const url = getUrl(notification);
         const data = build(notification);
 
-        // Return an Axios config object
+        // Return an Axios arguments as array
+        // return [url, {method, data}];
         return { method, url, data };
     };
 };

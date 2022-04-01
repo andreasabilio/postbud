@@ -24,10 +24,14 @@ const replaceReducer = (store) => (string, path) => {
     return string.replace(pattern, replacement);
 };
 
+// Find placeholders in string && cleanup
+const findPlaceholders = string => string.match(/\{\{([a-zA-Z.]*)\}\}/gm)
+    .map(m => m.replace('{{', '').replace('}}', ''));
+
 // The parser
 module.exports = (string, source) => {
-    const paths = string.match(/\{\{([a-zA-Z.]*)\}\}/gm);
-    const store = paths.reduce(wantedReducer(source), {});
+    const placeholders = findPlaceholders(string);
+    const store = placeholders.reduce(wantedReducer(source), {});
     const wanted = Object.keys(store);
 
     return wanted.reduce(replaceReducer(store), string);
