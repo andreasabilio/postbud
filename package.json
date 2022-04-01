@@ -1,6 +1,6 @@
 {
   "name": "postbud",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "SMTP to HTTP gateway",
   "main": "index.js",
   "scripts": {
