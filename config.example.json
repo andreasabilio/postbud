@@ -1,7 +1,7 @@
 {
     "port": 2526,
     "fallback": {
-        "endpoint": "http://health.abilio.dk/.........",
+        "endpoint": "http://health.abilio.dk/......",
         "method": "get"
     },
     "handlers": [
@@ -9,7 +9,7 @@
             "name": "gotify",
             "endpoint": "http://push.abilio.dk/message",
             "method": "post",
-            "fallbackToken": "__fallback_token__",
+            "token": "AcQUrkKOv2PJxWF",
             "template": {
                 "message": "{{body}}", 
                 "title": "{{from.host}}", 
