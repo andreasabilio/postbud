@@ -77,7 +77,6 @@ module.exports = {
 
     // Log notifications
     logOutgoing: (data) => {
-        // console.log('>>>', data);
         log.info(`Notification(s) for "${data.mail.from.text}" dispatched`);
         return data;
     }
