@@ -1,0 +1,67 @@
+{
+    "port": 2526,
+    "fallback": {
+        "endpoint": "http://health.abilio.dk/.........",
+        "method": "get"
+    },
+    "handlers": [
+        {
+            "name": "gotify",
+            "endpoint": "http://push.abilio.dk/message",
+            "method": "post",
+            "fallbackToken": "__fallback_token__",
+            "template": {
+                "message": "{{body}}", 
+                "title": "{{from.host}}", 
+                "priority": 5, 
+                "extras": {
+                    "client::display": {
+                        "contentType": "text/markdown"
+                    }
+                }
+            },
+            "origins": [
+                {
+                    "name": "sancho",
+                    "host": "sancho.h.abilio.dk",
+                    "token": "ADRoC8IXdD3kZO1"
+                },
+                {
+                    "name": "diogenes",
+                    "host": "diogenes.abilio.dk",
+                    "token": "AcC1E7gEi00wQjR"
+                },
+                {
+                    "name": "harald",
+                    "host": "harald.h.abilio.dk",
+                    "token": "AGrtDDKV8n9GH5G"
+                },
+                {
+                    "name": "hopper",
+                    "host": "hopper.h.abilio.dk",
+                    "token": "ARzmny.zxj9rqmX"
+                },
+                {
+                    "name": "zetas",
+                    "host": "zzz.h.abilio.dk",
+                    "token": "AXaK2aA.MC1K6xk"
+                },
+                {
+                    "name": "magallanes",
+                    "host": "magallanes.h.abilio.dk",
+                    "token": "AzgnB8XVWCPnaMH"
+                },
+                {
+                    "name": "pihole",
+                    "host": "pihole.abilio.dk",
+                    "token": "Ajh9iipmoEhFxjt"
+                },
+                {
+                    "name": "wozniak",
+                    "host": "wozniak.h.abilio.dk",
+                    "token": "ABIcbBY8LsW_obj"
+                }
+            ]
+        }
+    ]
+}
