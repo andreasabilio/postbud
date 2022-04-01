@@ -1,5 +1,5 @@
 const config = require('./config');
-const utilities = require('./utilities');
+const utilities = require('./lib/utilities');
 
 // Extract utilities
 const { log, logIncomming, logOutgoing } = utilities;
